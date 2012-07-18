@@ -51,9 +51,11 @@ render_({Counters, Timers}) ->
   CountersMessage = render_counters_(Counters),
   TimersMessage = render_timers_(Timers),
   % Mochijson2 JSON struct
-  Term = {struct, [{gauges, CountersMessage ++ TimersMessage}]},
-  % Encode the final message
-  erlang:iolist_to_binary(mochijson2:encode(Term)).
+  Term = {struct, [{gauges, TimersMessage}, {counters, CountersMessage}]},
+   % Encode the final message
+  R = erlang:iolist_to_binary(mochijson2:encode(Term)),
+  error_logger:info_msg("[~s] Metrics:~n~s~n", [?MODULE, R]),
+  R.
 
 
 %% @doc Renders the counter metrics
